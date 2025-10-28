@@ -4,13 +4,16 @@
     <field name="model">slide.channel</field>
     <field name="inherit_id" ref="website_slides.view_slide_channel_form"/>
     <field name="arch" type="xml">
-      <xpath expr="//group[@name='options']" position="inside">
-        <field name="allow_sequential"/>
-        <field name="unlock_hour"/>
-        <field name="lessons_per_day"/>
-        <field name="catchup_allowed"/>
-        <field name="tz_mode"/>
-        <field name="fallback_tz"/>
+      <!-- Insert a new group anywhere safe inside the sheet -->
+      <xpath expr="//form/sheet" position="inside">
+        <group string="Sequential Learning">
+          <field name="allow_sequential"/>
+          <field name="unlock_hour"/>
+          <field name="lessons_per_day"/>
+          <field name="catchup_allowed"/>
+          <field name="tz_mode"/>
+          <field name="fallback_tz"/>
+        </group>
       </xpath>
     </field>
   </record>
