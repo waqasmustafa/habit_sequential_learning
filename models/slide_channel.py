@@ -10,12 +10,13 @@ class SlideChannel(models.Model):
     lessons_per_day = fields.Integer("Lessons per Day", default=1)
     catchup_allowed = fields.Boolean("Allow Catch-up", default=False)
     tz_mode = fields.Selection(
-        [("user","User Timezone"), ("course","Course (Website) TZ"), ("utc","UTC")],
+        [("user", "User Timezone"), ("course", "Course (Website) TZ"), ("utc", "UTC")],
         default="user", string="Timezone Mode",
         help="Which timezone to use for unlock calculations."
     )
     fallback_tz = fields.Char("Fallback TZ", default="UTC")
 
+    # Get timezone
     def _get_tz(self, user):
         self.ensure_one()
         if self.tz_mode == "user":
@@ -37,20 +38,32 @@ class SlideSlide(models.Model):
         """Return True if THIS slide is open for THIS user right now."""
         self.ensure_one()
         channel = self.channel_id
+
+        # ===== ADMIN / TEACHER BYPASS =====
+        if (
+            user.has_group('base.group_system')
+            or user.has_group('website_slides.group_website_slides_manager')
+            or user.has_group('website.group_website_publisher')
+        ):
+            return True
+
+        # If sequential not required, allow all
         if not channel.allow_sequential:
             return True
 
-        # 1) Find previous slide in order
+        # ===== FIND PREVIOUS PUBLISHED SLIDE =====
         prev = self.search([
             ("channel_id", "=", channel.id),
             ("sequence", "<", self.sequence),
-        ], order="sequence desc", limit=1)
+            ("is_category", "=", False),          # skip chapter headers
+            ("website_published", "=", True),     # only real lessons
+        ], order="sequence desc, id desc", limit=1)
 
-        # First slide rule (immediate open). If you add "Next Unlock" later, branch here.
+        # ===== FIRST SLIDE ALWAYS OPEN =====
         if not prev:
             return True
 
-        # 2) Has user completed the previous slide?
+        # ===== CHECK IF USER COMPLETED PREVIOUS =====
         link_prev = self.env["slide.slide.partner"].search([
             ("slide_id", "=", prev.id),
             ("partner_id", "=", user.partner_id.id),
@@ -59,15 +72,12 @@ class SlideSlide(models.Model):
         if not link_prev:
             return False
 
-        # 3) Daily cap in user's local day
+        # ===== DAILY LIMIT (LESSONS PER DAY) =====
         user_tz = channel._get_tz(user)
-        now_utc = fields.Datetime.now()  # naive UTC
-        # make aware UTC then convert to local tz
+        now_utc = fields.Datetime.now()
         now_local = pytz.utc.localize(now_utc).astimezone(user_tz)
         day_start_local = now_local.replace(hour=0, minute=0, second=0, microsecond=0)
         day_end_local = day_start_local + timedelta(days=1)
-
-        # Convert local window back to naive UTC for domain searches
         day_start_utc = day_start_local.astimezone(pytz.utc).replace(tzinfo=None)
         day_end_utc = day_end_local.astimezone(pytz.utc).replace(tzinfo=None)
 
@@ -81,8 +91,8 @@ class SlideSlide(models.Model):
         if completed_today >= max(channel.lessons_per_day, 1):
             return False
 
-        # 4) Next unlock time after previous completion at unlock_hour (local)
-        anchor_utc = link_prev.create_date  # naive UTC from DB
+        # ===== NEXT UNLOCK TIME (after previous completion) =====
+        anchor_utc = link_prev.create_date  # UTC-naive in DB
         anchor_local = pytz.utc.localize(anchor_utc).astimezone(user_tz)
 
         unlock_local = anchor_local.replace(
