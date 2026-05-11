@@ -1,0 +1,517 @@
+/* PREMIUM GALAXY THEME - CENTERED FINAL DESIGN */
+
+@keyframes br-breathing-glow {
+    0% {
+        box-shadow: 0 0 10px rgba(51, 212, 255, 0.4);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(51, 212, 255, 0.8);
+        transform: scale(1.04);
+    }
+
+    100% {
+        box-shadow: 0 0 10px rgba(51, 212, 255, 0.4);
+        transform: scale(1);
+    }
+}
+
+.br-journey-wrapper {
+    position: relative;
+    min-height: 100vh;
+    background: #0f0b1e;
+    /* Deep purple base */
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(100, 43, 115, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(198, 66, 110, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(42, 8, 69, 0.5) 0%, transparent 70%),
+        radial-gradient(circle at 10% 80%, rgba(123, 31, 162, 0.2) 0%, transparent 40%);
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    padding: 0.5rem 2rem 1.5rem 2rem !important;
+    /* REDUCED TOP PADDING */
+    overflow-x: hidden;
+}
+
+/* Starry Overlay */
+.br-journey-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle, #fff 1px, transparent 1px),
+        radial-gradient(circle, #fff 1.5px, transparent 1.5px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+    background-size: 150px 150px, 250px 250px, 400px 400px;
+    background-position: 0 0, 50px 50px, 100px 100px;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.br-journey-content {
+    display: none;
+    /* Hidden on desktop by default */
+    position: relative;
+    z-index: 10;
+}
+
+.br-desktop-only-message {
+    display: flex;
+    position: relative;
+    z-index: 20;
+}
+
+/* HERO SECTION - Centered Hero */
+.br-hero-container {
+    max-width: 800px;
+    margin: 0 auto 2.5rem auto;
+}
+
+.br-hero-card {
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.br-glass {
+    background: rgba(25, 15, 45, 0.4);
+    /* Dark purple tint */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Sophisticated white border */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Subtle inner glow */
+}
+
+.br-status-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 6px 20px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+.br-slide-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #fff !important;
+}
+
+.br-slide-desc {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.br-start-btn {
+    background: linear-gradient(90deg, #33D4FF, #48E1B9) !important;
+    border: none !important;
+    color: #000 !important;
+    /* TEXT COLOR BLACK */
+    padding: 0.8rem 2.5rem !important;
+    border-radius: 30px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    display: inline-block;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(51, 212, 255, 0.4) !important;
+    animation: br-breathing-glow 3s infinite ease-in-out;
+    /* BREATHING GLOW */
+}
+
+.br-start-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(51, 212, 255, 0.6) !important;
+}
+
+.br-replay-btn,
+.br-reset-btn {
+    background: transparent !important;
+    border: 2px solid #00ffcc !important;
+    color: #00ffcc !important;
+    border-radius: 30px !important;
+    padding: 0.6rem 2rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.2) !important;
+    animation: none !important;
+    /* Disable glow on reset/replay */
+}
+
+.br-replay-btn:hover,
+.br-reset-btn:hover {
+    background: rgba(0, 255, 204, 0.1) !important;
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.4) !important;
+    transform: translateY(-2px);
+}
+
+.br-reset-area {
+    margin-top: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+.br-supportive-tools-header {
+    display: none;
+    /* Hidden on desktop */
+}
+
+.br-category-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2.5rem 0;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.br-category-card {
+    flex: 1;
+    min-width: 250px;
+    padding: 1.5rem;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Specific Category Card Gradients info ss1 */
+.br-category-card[data-toggle-target="mornings"] {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.4) 100%) !important;
+    border-color: rgba(118, 75, 162, 0.3) !important;
+}
+
+.br-category-card[data-toggle-target="meals"] {
+    background: linear-gradient(135deg, rgba(240, 147, 251, 0.2) 0%, rgba(245, 87, 108, 0.4) 100%) !important;
+    border-color: rgba(245, 87, 108, 0.3) !important;
+}
+
+.br-category-card[data-toggle-target="mindset"] {
+    background: linear-gradient(135deg, rgba(94, 231, 223, 0.2) 0%, rgba(180, 144, 202, 0.4) 100%) !important;
+    border-color: rgba(94, 231, 223, 0.3) !important;
+}
+
+.br-category-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.br-header-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.br-category-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.br-category-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff !important;
+    margin-bottom: 0.4rem;
+}
+
+.br-category-desc {
+    font-size: 0.75rem !important;
+    /* SMALLER FONT */
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.1 !important;
+    /* ADJUSTED LINE HEIGHT */
+    font-weight: 500;
+}
+
+/* LECTURE LIST REVEAL */
+.br-lecture-list-reveal {
+    display: none;
+    max-width: 900px;
+    margin: 0 auto 4rem;
+}
+
+.br-lecture-list-reveal.open {
+    display: block;
+}
+
+.br-list-item {
+    display: block;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 0.8rem;
+    color: #fff !important;
+    text-decoration: none !important;
+    transition: all 0.2s;
+}
+
+.br-list-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(10px);
+}
+
+/* JOURNEY SIDEBAR */
+.br-journey-sidebar {
+    background: rgba(15, 5, 25, 0.6) !important;
+    /* Deeper purple tint */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(123, 31, 162, 0.2) !important;
+    /* Subtle purple border */
+    border-radius: 20px;
+    padding: 1.5rem 1.2rem;
+    max-height: 350px !important;
+    /* Strictly limit as requested */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Custom Thin Scrollbar for Sidebar */
+.br-journey-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.br-journey-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.br-journey-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.br-journey-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.br-timeline-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.br-timeline-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+}
+
+.br-timeline-item.completed {
+    opacity: 0.9;
+}
+
+.br-timeline-item.completed .br-timeline-dot {
+    background: #6BCB77;
+    color: #fff;
+}
+
+.br-timeline-item.active {
+    opacity: 1;
+    transform: scale(1.05);
+    background: rgba(0, 198, 255, 0.1) !important;
+    box-shadow: 0 0 20px rgba(0, 198, 255, 0.4) !important;
+    border: 1px solid rgba(0, 198, 255, 0.6) !important;
+}
+
+.br-timeline-item.active .br-timeline-dot {
+    background: #00C6FF;
+    box-shadow: 0 0 10px rgba(0, 198, 255, 0.8);
+}
+
+.br-timeline-item.locked {
+    opacity: 0.35;
+}
+
+.br-timeline-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+@media (min-width: 1200px) {
+    .br-journey-sidebar {
+        position: fixed;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 190px;
+    }
+}
+
+/* ===================================================
+   MOBILE VIEW - Horizontal Journey Strip
+   =================================================== */
+@media (max-width: 991px) {
+
+    /* Make the content a column so we can reorder via order property */
+    .br-desktop-only-message {
+        display: none !important;
+    }
+
+    .br-journey-content {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .br-header-section {
+        order: 1;
+    }
+
+    /* Sidebar moves above hero card */
+    .br-journey-sidebar {
+        order: 2;
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: none !important;
+        overflow-y: hidden !important;
+        overflow-x: auto !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    /* Hide the "YOUR JOURNEY" label on mobile */
+    .br-journey-sidebar>h5 {
+        display: none;
+    }
+
+    /* Each day pill */
+    .br-timeline-item {
+        flex-shrink: 0;
+        flex-direction: column !important;
+        gap: 0.25rem;
+        align-items: center;
+        min-width: 56px;
+        padding: 0.4rem 0.5rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .br-timeline-dot {
+        width: 22px;
+        height: 22px;
+        font-size: 0.65rem;
+    }
+
+    .br-timeline-text {
+        font-size: 0.7rem;
+    }
+
+    /* Active pill highlight */
+    .br-timeline-item.active {
+        background: rgba(0, 198, 255, 0.15);
+        transform: none;
+    }
+
+    /* Horizontal scrollbar for the strip */
+    .br-journey-sidebar::-webkit-scrollbar {
+        height: 3px !important;
+        width: 0 !important;
+    }
+
+    .br-hero-container {
+        order: 3;
+    }
+
+    .br-category-section {
+        order: 5 !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: stretch !important;
+        gap: 0.6rem !important;
+        margin: 1.5rem 0 !important;
+    }
+
+    .br-category-card {
+        flex: 1 !important;
+        min-width: 0 !important;
+        padding: 0.8rem 0.5rem !important;
+        border-radius: 12px !important;
+    }
+
+    /* Hide descriptions on mobile to save space */
+    .br-slide-desc {
+        display: none !important;
+    }
+
+    .br-category-icon {
+        font-size: 1.6rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .br-category-title {
+        font-size: 0.8rem !important;
+        line-height: 1.1 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .br-hero-card {
+        padding: 1.5rem !important;
+    }
+
+    .br-slide-title {
+        font-size: 2.2rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .br-status-badge {
+        margin-bottom: 0.8rem !important;
+        font-size: 0.6rem !important;
+    }
+
+    .br-supportive-tools-header {
+        display: block !important;
+        order: 4 !important;
+        text-align: left;
+        font-weight: 800;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.65);
+        margin: 1.5rem 0 0.5rem 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .br-reset-area {
+        order: 7 !important;
+        margin-top: 1rem !important;
+    }
+
+    /* Lecture reveal lists come ABOVE the reset button */
+    .br-lecture-list-reveal {
+        order: 6 !important;
+    }
+}

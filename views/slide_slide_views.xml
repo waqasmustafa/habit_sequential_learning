@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- We are now using the list view toggles in the slide.channel form instead of injecting here -->
+</odoo>

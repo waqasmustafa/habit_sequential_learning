@@ -1,0 +1,219 @@
+<odoo>
+    <!-- Add Fonts via Template for better stability -->
+    <template id="journey_fonts" inherit_id="website.layout">
+        <xpath expr="//head" position="inside">
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Outfit:wght@400;700&amp;display=swap" rel="stylesheet"/>
+        </xpath>
+    </template>
+
+    <!-- Keep the tooltip override for standard views if needed, though we'll use custom UI mostly -->
+    <template id="course_slides_list_slide_inherit_br" inherit_id="website_slides.course_slides_list_slide">
+        <xpath expr="//a[contains(@class, 'o_wslides_js_slides_list_slide_link')]" position="attributes">
+            <attribute name="t-att-href">slide.website_share_url + '?fullscreen=1' if slide.is_unlocked_for(request.env.user) else '#'</attribute>
+            <attribute name="t-att-onclick">'return true;' if slide.is_unlocked_for(request.env.user) else 'return false;'</attribute>
+            <attribute name="t-att-class">'o_wslides_js_slides_list_slide_link ' + ('text-decoration-none ' if not slide.is_unlocked_for(request.env.user) else '') + ('br-locked-lesson ' if not slide.is_unlocked_for(request.env.user) else '') + ('o_has_tooltip ' if not slide.is_unlocked_for(request.env.user) else '')</attribute>
+            <attribute name="t-att-title">slide.next_unlock_info(request.env.user)['unlock_message'] if not slide.is_unlocked_for(request.env.user) else ''</attribute>
+            <attribute name="data-bs-toggle">tooltip</attribute>
+            <attribute name="data-bs-html">true</attribute>
+            <attribute name="data-bs-placement">top</attribute>
+            <attribute name="data-bs-container">body</attribute>
+        </xpath>
+    </template>
+
+    <!-- JOURNEY UI OVERHAUL -->
+    <template id="course_main_journey" inherit_id="website_slides.course_main">
+        <!-- Keep main header (logo), but hide footer if sequential is on -->
+        <xpath expr="//t[@t-call='website.layout']" position="before">
+            <t t-set="no_header" t-value="False"/>
+            <t t-set="no_footer" t-value="channel.allow_sequential"/>
+        </xpath>
+
+        <!-- Add class to body/wrap for our styling -->
+        <xpath expr="//div[@id='wrap']" position="attributes">
+            <attribute name="t-att-class">'br-journey-wrapper' if (channel.allow_sequential and channel.is_member) else ''</attribute>
+        </xpath>
+
+        <!-- Inject Journey UI if sequential is enabled -->
+        <xpath expr="//div[@id='wrap']" position="inside">
+            <t t-if="channel.allow_sequential and channel.is_member">
+                <t t-set="nights" t-value="channel._get_journey_nights()"/>
+                <t t-set="active_night" t-value="channel._get_active_night(request.env.user) or (nights[0] if nights else None)"/>
+                <t t-set="unlock_info" t-value="active_night.next_unlock_info(request.env.user) if active_night else {'unlock_message': 'No lectures available'}"/>
+
+                <!-- Desktop-only message card (Hidden on mobile via CSS) -->
+                <div class="container br-desktop-only-message d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+                    <div class="br-hero-card br-glass text-center p-5 mx-auto" style="max-width: 600px;">
+                        <span class="br-category-icon d-block mb-4" style="font-size: 5rem;">📱</span>
+                        <h1 class="display-4 fw-bold mb-3 text-white">Mobile Required</h1>
+                        <p class="lead text-white-50">
+                            This specialized learning journey is optimized for mobile devices. 
+                            Please open this course on your smartphone to continue.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="container py-4 br-journey-content">
+                    <!-- SIMPLE CENTERED COURSE TITLE (Hidden on Mobile) -->
+                    <div class="mb-4 text-center d-none d-lg-block">
+                        <h1 class="display-4 fw-bold text-white mb-2">
+                            <t t-esc="channel.name"/>
+                        </h1>
+                        <p class="text-white-50 lead">
+                            <t t-esc="channel.description_short or 'Follow your daily session to reset your habits.'"/>
+                        </p>
+                    </div>
+
+                    <!-- 1. HERO SECTION -->
+                    <div class="br-hero-container">
+                        <div class="br-hero-card br-glass">
+                            <span class="br-status-badge">
+                                <t t-esc="unlock_info['unlock_message']"/>
+                            </span>
+                            <h1 class="display-4 fw-bold mb-3 br-slide-title">
+                                <t t-esc="active_night.name"/>
+                            </h1>
+                            <p class="lead mb-4 text-white-50 br-slide-desc">
+                                This session builds on your progress. Focus and continue your journey.
+                            </p>
+                            
+                            <!-- This area gets dynamically updated by JS on sidebar click -->
+                            <div class="br-hero-btn-area">
+                                <a t-if="active_night.is_unlocked_for(request.env.user)" 
+                                   t-att-href="'/slides/slide/%s?fullscreen=1' % active_night.id"
+                                   t-att-title="active_night.name"
+                                   t-attf-class="btn br-start-btn #{'br-replay-btn' if active_night.is_completed_by(request.env.user) else ''}">
+                                    <t t-if="active_night.is_completed_by(request.env.user)">
+                                        <i class="fa fa-undo me-2"/> Replay Session
+                                    </t>
+                                    <t t-else="">
+                                        Start Session
+                                    </t>
+                                </a>
+                                <div t-else="" class="text-muted d-flex align-items-center justify-content-center">
+                                    <i class="fa fa-lock me-2"/> Locked
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. CATEGORY BOXES -->
+                    <h6 class="br-supportive-tools-header">Supportive Tools</h6>
+                    <div class="br-category-section">
+                        <!-- Morning Box -->
+                        <div class="br-category-card br-glass" data-toggle-target="mornings">
+                            <span class="br-category-icon">🌙</span>
+                            <h3 class="br-category-title">Morning Reset</h3>
+                            <p class="br-category-desc">Start your day</p>
+                        </div>
+
+                        <!-- Before Meal Box -->
+                        <div class="br-category-card br-glass" data-toggle-target="meals">
+                            <span class="br-category-icon">☀️</span>
+                            <h3 class="br-category-title">Before Meal</h3>
+                            <p class="br-category-desc">Control cravings</p>
+                        </div>
+
+                        <!-- Mindset Box -->
+                        <div class="br-category-card br-glass" data-toggle-target="mindset">
+                            <span class="br-category-icon">🧠</span>
+                            <h3 class="br-category-title">Mindset Boost</h3>
+                            <p class="br-category-desc">Stay focused</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. DYNAMIC LISTS (Hidden by default) -->
+                    <div id="mornings" class="br-lecture-list-reveal">
+                        <div class="row mt-4">
+                            <t t-foreach="channel._get_mornings()" t-as="slide">
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <a t-att-href="'/slides/slide/%s?fullscreen=1' % slide.id" class="d-block br-glass p-3 rounded-3 text-white text-decoration-none br-list-item">
+                                        <i class="fa fa-play-circle me-2"/> <t t-esc="slide.name"/>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div id="meals" class="br-lecture-list-reveal">
+                        <div class="row mt-4">
+                            <t t-foreach="channel._get_before_meals()" t-as="slide">
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <a t-att-href="'/slides/slide/%s?fullscreen=1' % slide.id" class="d-block br-glass p-3 rounded-3 text-white text-decoration-none br-list-item">
+                                        <i class="fa fa-play-circle me-2"/> <t t-esc="slide.name"/>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div id="mindset" class="br-lecture-list-reveal">
+                        <div class="row mt-4">
+                            <t t-foreach="channel._get_mindsets()" t-as="slide">
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <a t-att-href="'/slides/slide/%s?fullscreen=1' % slide.id" class="d-block br-glass p-3 rounded-3 text-white text-decoration-none br-list-item">
+                                        <i class="fa fa-play-circle me-2"/> <t t-esc="slide.name"/>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Reset The Program Button -->
+                    <div class="br-reset-area text-center my-4">
+                        <form action="/sequentiallearning/reset_progress" method="POST" t-att-id="'reset_form_%s' % channel.id">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="channel_id" t-att-value="channel.id"/>
+                            <button type="submit" class="btn br-reset-btn" onclick="return confirm('Are you sure you want to reset your progress? This will send you back to Day 1.')">
+                                <i class="fa fa-refresh me-2"/> Reset The Program
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- 4. SIDEBAR JOURNEY TIMELINE -->
+                    <div class="br-journey-sidebar br-glass">
+                        <h5 class="mb-4 text-uppercase tracking-wider text-white-50 small">Your Journey</h5>
+                        <t t-foreach="nights" t-as="night">
+                            <t t-set="is_done" t-value="night.is_completed_by(request.env.user)"/>
+                            <t t-set="is_active" t-value="night.id == active_night.id"/>
+                            <t t-set="is_locked" t-value="not night.is_unlocked_for(request.env.user)"/>
+                            <t t-set="night_info" t-value="night.next_unlock_info(request.env.user)"/>
+                            
+                            <!-- Embed all night data as data-* attributes for JS -->
+                            <div t-att-class="'br-timeline-item ' + ('completed' if is_done else '') + ('active ' if is_active else '') + ('locked ' if is_locked else '')"
+                                 t-att-data-night-id="night.id"
+                                 t-att-data-night-name="night.name"
+                                 t-att-data-night-url="'/slides/slide/%s?fullscreen=1' % night.id"
+                                 t-att-data-night-status="'done' if is_done else ('locked' if is_locked else 'active')"
+                                 t-att-data-night-message="night_info.get('unlock_message', 'Available Now')"
+                                 style="cursor:pointer"
+                            >
+                                <div class="br-timeline-dot">
+                                    <i t-if="is_done" class="fa fa-check"/>
+                                    <i t-if="is_locked" class="fa fa-lock"/>
+                                </div>
+                                <div class="br-timeline-text">
+                                    <span t-att-class="'text-decoration-none ' + ('text-white' if not is_locked else 'text-white-50')">
+                                        Day <t t-esc="night_index + 1"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+
+        <!-- Hide original content components if sequential is on and user is member -->
+        <xpath expr="//div[contains(@class, 'o_wslides_course_main')]" position="attributes">
+            <attribute name="t-if">not channel.allow_sequential or not channel.is_member</attribute>
+        </xpath>
+        <xpath expr="//div[contains(@class, 'o_wslides_course_header') or contains(@t-attf-class, 'o_wslides_course_header')]" position="attributes">
+            <attribute name="t-if">not channel.allow_sequential or not channel.is_member</attribute>
+        </xpath>
+        <xpath expr="//t[@t-call='website_slides.course_nav']" position="attributes">
+            <attribute name="t-if">not channel.allow_sequential or not channel.is_member</attribute>
+        </xpath>
+    </template>
+</odoo>

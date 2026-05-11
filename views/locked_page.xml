@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- XML ID used in controllers: bright_ready_sequential.locked_lesson_template -->
+    <template id="locked_lesson_template" name="Locked Lesson Page">
+      <t t-call="website.layout">
+        <div id="wrap" class="oe_structure">
+          <div class="container py-5">
+            <div class="row justify-content-center">
+              <div class="col-lg-8 text-center">
+
+                <!-- Icon -->
+                <div class="mb-4">
+                  <i class="fa fa-lock text-warning" style="font-size:80px;"></i>
+                </div>
+
+                <!-- Heading -->
+                <h1 class="display-5 fw-semibold mb-2">
+                  Lesson Locked 🔒
+                </h1>
+
+                <!-- Message -->
+                <div class="alert alert-warning border-0 bg-light mb-4" role="alert">
+                  <h4 class="alert-heading mb-2">
+                    “<t t-esc="lesson_name"/>” is currently locked
+                  </h4>
+                  <t t-if="unlock_message">
+                    <p class="mb-0"><t t-esc="unlock_message"/></p>
+                  </t>
+                  <t t-if="unlock_datetime_str">
+                    <p class="mb-0">
+                      This lesson will be available on
+                      <strong><t t-esc="unlock_datetime_str"/></strong>.
+                    </p>
+                  </t>
+                </div>
+
+
+                <!-- Actions -->
+                <div class="d-grid gap-2 d-md-flex justify-content-center mb-5">
+                  <a href="/slides" class="btn btn-primary btn-lg px-4">
+                    <i class="fa fa-arrow-left me-2"></i> Back to My Courses
+                  </a>
+                  <a href="/slides" class="btn btn-lg px-4" style="color: white !important; border: 1px solid white !important;">
+                    <i class="fa fa-home me-2"></i> Course Overview
+                  </a>
+                </div>
+
+                <!-- Quote -->
+                <p class="text-muted fst-italic">
+                  "The expert in anything was once a beginner."
+                  <small>- Helen Hayes</small>
+                </p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </t>
+    </template>
+  </data>
+</odoo>

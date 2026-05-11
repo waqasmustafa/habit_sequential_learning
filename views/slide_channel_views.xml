@@ -1,0 +1,28 @@
+<odoo>
+  <record id="view_channel_form_inherit_seq" model="ir.ui.view">
+    <field name="name">slide.channel.form.sequential</field>
+    <field name="model">slide.channel</field>
+    <field name="inherit_id" ref="website_slides.view_slide_channel_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//form/sheet" position="inside">
+        <group string="SEQUENTIAL LEARNING" name="seq_learning">
+          <group col="2">
+            <field name="allow_sequential"/>
+            <field name="night_unlock_hour" invisible="not allow_sequential"/>
+            <field name="tz_mode" invisible="not allow_sequential"/>
+            <field name="fallback_tz" invisible="not allow_sequential"/>
+          </group>
+        </group>
+      </xpath>
+
+      <!-- New: Modify the Content List View inside the Course -->
+      <xpath expr="//field[@name='slide_ids']//field[@name='survey_id']" position="attributes">
+          <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='slide_ids']//field[@name='survey_id']" position="after">
+          <field name="is_morning" string="Day" widget="boolean_toggle"/>
+          <field name="is_night" string="Night" widget="boolean_toggle"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>
