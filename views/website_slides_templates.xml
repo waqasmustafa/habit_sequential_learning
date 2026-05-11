@@ -5,6 +5,20 @@
             <link rel="preconnect" href="https://fonts.googleapis.com"/>
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Outfit:wght@400;700&amp;display=swap" rel="stylesheet"/>
+            
+            <!-- PWA Manifest & Icons Force -->
+            <link rel="manifest" t-attf-href="/pwa/#{website.id}/manifest.json"/>
+            <meta name="mobile-web-app-capable" content="yes"/>
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+            <link rel="apple-touch-icon" t-attf-href="/website/favicon.png?website_id=#{website.id}"/>
+        </xpath>
+    </template>
+
+    <!-- Ensure PWA works in Fullscreen Mode too -->
+    <template id="journey_pwa_fullscreen" inherit_id="website_slides.slide_fullscreen">
+        <xpath expr="//head" position="inside">
+            <link rel="manifest" t-attf-href="/pwa/#{website.id}/manifest.json"/>
+            <link rel="apple-touch-icon" t-attf-href="/website/favicon.png?website_id=#{website.id}"/>
         </xpath>
     </template>
 
