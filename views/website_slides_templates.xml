@@ -14,13 +14,6 @@
         </xpath>
     </template>
 
-    <!-- Ensure PWA works in Fullscreen Mode too -->
-    <template id="journey_pwa_fullscreen" inherit_id="website_slides.slide_fullscreen">
-        <xpath expr="//head" position="inside">
-            <link rel="manifest" t-attf-href="/pwa/#{website.id}/manifest.json"/>
-            <link rel="apple-touch-icon" t-attf-href="/website/favicon.png?website_id=#{website.id}"/>
-        </xpath>
-    </template>
 
     <!-- Keep the tooltip override for standard views if needed, though we'll use custom UI mostly -->
     <template id="course_slides_list_slide_inherit_br" inherit_id="website_slides.course_slides_list_slide">
