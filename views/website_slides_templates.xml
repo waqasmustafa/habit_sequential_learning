@@ -76,7 +76,7 @@
                     <div class="br-hero-container">
                         <div class="br-hero-card br-glass">
                             <span class="br-status-badge">
-                                <t t-esc="unlock_info['unlock_message']"/>
+                                <t t-esc="unlock_info['unlock_message']"/> (<t t-esc="unlock_info.get('tz_name', 'UTC')"/>)
                             </span>
                             <h1 class="display-4 fw-bold mb-3 br-slide-title">
                                 <t t-esc="active_night.name"/>
@@ -193,7 +193,7 @@
                                  t-att-data-night-name="night.name"
                                  t-att-data-night-url="'/slides/slide/%s?fullscreen=1' % night.id"
                                  t-att-data-night-status="'done' if is_done else ('locked' if is_locked else 'active')"
-                                 t-att-data-night-message="night_info.get('unlock_message', 'Available Now')"
+                                 t-att-data-night-message="night_info.get('unlock_message', 'Available Now') + ' (' + night_info.get('tz_name', 'UTC') + ')'"
                                  style="cursor:pointer"
                             >
                                 <div class="br-timeline-dot">
