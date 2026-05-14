@@ -167,6 +167,17 @@
                         </div>
                     </div>
 
+                    <!-- Reset The Program Button -->
+                    <div class="br-reset-area text-center my-4">
+                        <form action="/sequentiallearning/reset_progress" method="POST" t-att-id="'reset_form_%s' % channel.id">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="channel_id" t-att-value="channel.id"/>
+                            <button type="submit" class="btn br-reset-btn" onclick="return confirm('Are you sure you want to reset your progress? This will send you back to Day 1.')">
+                                <i class="fa fa-refresh me-2"/> Reset The Program
+                            </button>
+                        </form>
+                    </div>
+
                     <!-- 4. SIDEBAR JOURNEY TIMELINE -->
                     <div class="br-journey-sidebar br-glass">
                         <h5 class="mb-4 text-uppercase tracking-wider text-white-50 small">Your Journey</h5>
@@ -196,25 +207,6 @@
                                 </div>
                             </div>
                         </t>
-                    </div>
-
-                    <!-- Footer Action Buttons (Refresh & Reset) -->
-                    <div class="br-footer-actions text-center mt-5 mb-5" style="width: 100%; clear: both;">
-                        <!-- Refresh Button -->
-                        <div class="mb-3">
-                            <button type="button" class="btn br-reset-btn" onclick="window.location.reload();">
-                                <i class="fa fa-refresh me-2"/> Refreshing your course progress
-                            </button>
-                        </div>
-                        
-                        <!-- Reset Button -->
-                        <form action="/sequentiallearning/reset_progress" method="POST" t-att-id="'reset_form_%s' % channel.id">
-                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <input type="hidden" name="channel_id" t-att-value="channel.id"/>
-                            <button type="submit" class="btn br-reset-btn" onclick="return confirm('Are you sure you want to reset your progress? This will send you back to Day 1.')" style="border-color: rgba(255,255,255,0.2); opacity: 0.8;">
-                                <i class="fa fa-history me-2"/> Reset The Program
-                            </button>
-                        </form>
                     </div>
                 </div>
             </t>
