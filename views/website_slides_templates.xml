@@ -168,9 +168,9 @@
                     </div>
 
                     <!-- Refresh Course Progress Button -->
-                    <div class="br-reset-area text-center my-4">
+                    <div class="br-reset-area text-center my-2">
                         <button type="button" class="btn br-reset-btn" onclick="window.location.reload();">
-                            <i class="fa fa-sync-alt me-2"/> Refreshing your course progress
+                            Refreshing your course progress
                         </button>
                     </div>
 
