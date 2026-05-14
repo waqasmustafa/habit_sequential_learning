@@ -167,6 +167,13 @@
                         </div>
                     </div>
 
+                    <!-- Refresh Course Progress Button -->
+                    <div class="br-reset-area text-center my-4">
+                        <button type="button" class="btn br-reset-btn" onclick="window.location.reload();">
+                            <i class="fa fa-sync-alt me-2"/> Refreshing your course progress
+                        </button>
+                    </div>
+
                     <!-- Reset The Program Button -->
                     <div class="br-reset-area text-center my-4">
                         <form action="/sequentiallearning/reset_progress" method="POST" t-att-id="'reset_form_%s' % channel.id">
