@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 import pytz
 
 
@@ -253,31 +253,24 @@ class SlideSlide(models.Model):
         if not link_prev_night:
             return False # Locked until Night N-1 done
 
-        # Time and Frequency checks for Night lectures
+        # Time and Frequency check for Night lectures
         user_tz = channel._get_tz(user)
         now_utc = fields.Datetime.now()
         now_local = pytz.utc.localize(now_utc).astimezone(user_tz)
-        
-        # Frequency: Different day than previous night lesson completion
         prev_comp_local = pytz.utc.localize(link_prev_night.create_date).astimezone(user_tz)
         
         # --- TEST MODE BYPASS ---
         if channel.night_unlock_hour == "-1":
             return now_local >= prev_comp_local + timedelta(minutes=1)
-
-        # Same calendar day as completion -> Always Locked
-        if now_local.date() == prev_comp_local.date():
-            return False
-
-        # If it is 2 or more days after the completion day -> Always Unlocked
-        if now_local.date() > prev_comp_local.date() + timedelta(days=1):
-            return True
-
-        # Clock Rule: Check Night Unlock Hour (Exactly on the next day)
-        night_hour = int(channel.night_unlock_hour or 20)
-        night_today_local = now_local.replace(hour=night_hour, minute=0, second=0, microsecond=0)
         
-        return now_local >= night_today_local
+        night_hour = int(channel.night_unlock_hour or 20)
+        
+        # Single unlock threshold: day AFTER prev completion, at the unlock hour, in user's TZ
+        unlock_day = prev_comp_local.date() + timedelta(days=1)
+        unlock_naive = datetime.combine(unlock_day, time(hour=night_hour, minute=0))
+        unlock_local = user_tz.localize(unlock_naive)
+        
+        return now_local >= unlock_local
 
     # ---------- UI Unlock Info ----------
     def next_unlock_info(self, user):
@@ -338,26 +331,21 @@ class SlideSlide(models.Model):
                 }
             return {"unlock_dt_local": None, "tz_name": tz_name, "unlock_message": "Available Now"}
 
-        # If it is 2 or more days after the completion day -> Always Available
-        if now_local.date() > prev_comp_local.date() + timedelta(days=1):
-            return {"unlock_dt_local": None, "tz_name": tz_name, "unlock_message": "Available Now"}
-
         labels = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
         night_time_str = labels[night_hour] if night_hour < len(labels) else "Night"
 
-        if prev_comp_local.date() >= now_local.date():
+        unlock_day = prev_comp_local.date() + timedelta(days=1)
+        unlock_naive = datetime.combine(unlock_day, time(hour=night_hour, minute=0))
+        unlock_local = user_tz.localize(unlock_naive)
+         
+        if now_local < unlock_local:
             return {
-                "unlock_dt_local": None,
+                "unlock_dt_local": unlock_local,
                 "tz_name": tz_name,
-                "unlock_message": "Available next day at %s" % night_time_str
-            }
-
-        night_today_local = now_local.replace(hour=night_hour, minute=0, second=0, microsecond=0)
-        if now_local < night_today_local:
-             return {
-                "unlock_dt_local": night_today_local,
-                "tz_name": tz_name,
-                "unlock_message": "Available today at %s" % night_time_str
+                "unlock_message": "Available %s at %s" % (
+                    "Tomorrow" if unlock_local.date() == now_local.date() + timedelta(days=1) else "on %s" % unlock_local.date().isoformat(),
+                    night_time_str,
+                ),
             }
 
         return {"unlock_dt_local": None, "tz_name": tz_name, "unlock_message": "Available Now"}
