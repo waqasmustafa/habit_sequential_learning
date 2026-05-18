@@ -265,10 +265,15 @@ class SlideSlide(models.Model):
         if channel.night_unlock_hour == "-1":
             return now_local >= prev_comp_local + timedelta(minutes=1)
 
-        if prev_comp_local.date() >= now_local.date():
+        # Same calendar day as completion -> Always Locked
+        if now_local.date() == prev_comp_local.date():
             return False
 
-        # Clock Rule: Check Night Unlock Hour
+        # If it is 2 or more days after the completion day -> Always Unlocked
+        if now_local.date() > prev_comp_local.date() + timedelta(days=1):
+            return True
+
+        # Clock Rule: Check Night Unlock Hour (Exactly on the next day)
         night_hour = int(channel.night_unlock_hour or 20)
         night_today_local = now_local.replace(hour=night_hour, minute=0, second=0, microsecond=0)
         
@@ -331,6 +336,10 @@ class SlideSlide(models.Model):
                     "tz_name": tz_name,
                     "unlock_message": "Available in 1 Minute (TEST)"
                 }
+            return {"unlock_dt_local": None, "tz_name": tz_name, "unlock_message": "Available Now"}
+
+        # If it is 2 or more days after the completion day -> Always Available
+        if now_local.date() > prev_comp_local.date() + timedelta(days=1):
             return {"unlock_dt_local": None, "tz_name": tz_name, "unlock_message": "Available Now"}
 
         labels = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
